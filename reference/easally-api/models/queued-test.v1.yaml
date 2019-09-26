@@ -1,0 +1,19 @@
+title: Queued Test
+type: object
+x-tags:
+  - tests
+description: A queued test
+properties:
+  id:
+    type: string
+    format: uuid
+  status:
+    type: string
+    enum:
+      - queued
+      - in-progress
+      - failed
+    description: The status of the queued test
+required:
+  - id
+  - status

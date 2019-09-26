@@ -1,0 +1,119 @@
+openapi: 3.0.0
+info:
+  title: Easally API
+  version: '1.0'
+  description: 'Initiate an Easally accessibility test, check its status, and retrieve the results.'
+  contact:
+    name: Stephen Lewis
+    url: 'https://www.easally.com'
+    email: stephen@easally.com
+  license:
+    name: MIT
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /tests:
+    post:
+      summary: Inititate a test
+      tags:
+        - tests
+      responses:
+        '202':
+          description: Accepted
+          headers:
+            Location:
+              schema:
+                type: string
+              description: 'The location of the new "queued test" resource'
+              required: true
+        '409':
+          description: Conflict
+          headers:
+            Location:
+              schema:
+                type: string
+              description: 'The location of an existing "queued test" resource'
+              required: true
+      description: Initiate an Easally accessibility test.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  example: 'https://www.example.com/test-me'
+                  description: The URL to test
+              required:
+                - url
+  '/queued-tests/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+        description: The ID of the queued test
+    get:
+      summary: Retrieve a queued test
+      tags:
+        - tests
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ./models/queued-test.v1.yaml
+        '303':
+          description: See Other
+          headers:
+            Location:
+              schema:
+                type: string
+              description: The location of the completed test resource
+              required: true
+        '410':
+          description: Gone
+      description: Retrieve the status of a queued Easally accessibility test.
+      parameters:
+        - schema:
+            type: string
+            default: application/json
+          in: header
+          name: Accept
+          required: true
+  '/tests/{id}':
+    parameters:
+      - type: string
+        name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the test
+    get:
+      summary: Retrieve a completed test
+      tags:
+        - tests
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ./models/test-result.v1.yaml
+        '404':
+          description: Not Found
+      description: Retrieve the results of a completed Easally accessibility test.
+      parameters:
+        - schema:
+            type: string
+            default: application/json
+          in: header
+          name: Accept
+          required: true
+components:
+  schemas: {}

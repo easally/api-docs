@@ -1,7 +1,5 @@
 title: Test Result
 type: object
-x-tags:
-  - tests
 properties:
   id:
     type: string

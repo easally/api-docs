@@ -1,7 +1,5 @@
 title: Queued Test
 type: object
-x-tags:
-  - tests
 description: A queued test
 properties:
   id:
@@ -14,6 +12,12 @@ properties:
       - in-progress
       - failed
     description: The status of the queued test
+  queued_at:
+    type: string
+    format: date-time
+    example: '2019-09-29T19:39:54+01:00'
+    description: ''
 required:
   - id
   - status
+  - queued_at

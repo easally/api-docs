@@ -9,14 +9,29 @@ info:
     email: stephen@easally.com
   license:
     name: MIT
+    url: https://github.com/easally/api-docs/blob/master/LICENSE.txt
 servers:
   - url: 'http://localhost:3000'
 paths:
   /tests:
     post:
       summary: Inititate a test
+      description: Initiate an accessibility test.
       tags:
         - Tests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  example: 'https://www.example.com/test-me'
+                  description: The URL to test
+              required:
+                - url
       responses:
         '202':
           description: Accepted
@@ -34,20 +49,44 @@ paths:
                 type: string
               description: 'The location of an existing "queued test" resource'
               required: true
-      description: Initiate an accessibility test.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                url:
-                  type: string
-                  format: uri
-                  example: 'https://www.example.com/test-me'
-                  description: The URL to test
-              required:
-                - url
+  '/tests/{id}':
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The ID of the test
+    get:
+      summary: Retrieve a completed test
+      description: Retrieve the results of a completed accessibility test.
+      tags:
+        - Tests
+      parameters:
+        - schema:
+            type: string
+            default: application/json
+          in: header
+          name: Accept
+          required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: './models/test-result.v1.yaml'
+        '404':
+          description: Not Found
+  /queued-tests:
+    get:
+      summary: Retrieve all of the queued tests
+      description: Retrieve information about all of the queued accessibility tests.
+      tags:
+        - Queued Tests
+      responses:
+        '204':
+          description: No Content
   '/queued-tests/{id}':
     parameters:
       - schema:
@@ -58,8 +97,16 @@ paths:
         description: The ID of the queued test
     get:
       summary: Retrieve a queued test
+      description: Retrieve information about a queued accessibility test.
       tags:
         - Queued Tests
+      parameters:
+        - schema:
+            type: string
+            default: application/json
+          in: header
+          name: Accept
+          required: true
       responses:
         '200':
           description: OK
@@ -77,58 +124,5 @@ paths:
               required: true
         '410':
           description: Gone
-      description: Retrieve information about a queued accessibility test.
-      parameters:
-        - schema:
-            type: string
-            default: application/json
-          in: header
-          name: Accept
-          required: true
-  '/tests/{id}':
-    parameters:
-      - type: string
-        name: id
-        in: path
-        required: true
-        schema:
-          type: string
-        description: The ID of the test
-    get:
-      summary: Retrieve a completed test
-      tags:
-        - Tests
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: ./models/test-result.v1.yaml
-        '404':
-          description: Not Found
-      description: Retrieve the results of a completed accessibility test.
-      parameters:
-        - schema:
-            type: string
-            default: application/json
-          in: header
-          name: Accept
-          required: true
-  /queued-tests:
-    get:
-      summary: Retrieve all of the queued tests
-      tags:
-        - Queued Tests
-      responses: {}
-      description: Retrieve information about all of the queued accessibility tests.
-      parameters: []
 components:
   schemas: {}
-  parameters:
-    - schema:
-        type: string
-        default: application/json
-      in: header
-      name: Accept
-      required: true

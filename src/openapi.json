@@ -386,12 +386,12 @@
 	],
 	"tags": [
 		{
-			"name": "Queued Tests",
-			"description": "Operations related to queued tests."
-		},
-		{
 			"name": "Tests",
 			"description": "Operations related to tests."
+		},
+		{
+			"name": "Queued Tests",
+			"description": "Operations related to queued tests."
 		}
 	]
 }

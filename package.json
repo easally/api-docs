@@ -18,7 +18,7 @@
     "url": "https://github.com/easally/api-docs/issues"
   },
   "scripts": {
-    "lint": "speccy lint ./src/openapi.json",
+    "lint": "speccy lint --config=speccy.yaml ./src/openapi.json",
     "docs": "speccy serve ./src/openapi.json"
   },
   "dependencies": {},

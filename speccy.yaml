@@ -1,0 +1,5 @@
+lint:
+  rules:
+  - default
+  skip:
+  - openapi-tags-alphabetical

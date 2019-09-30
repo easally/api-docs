@@ -1,0 +1,28 @@
+{
+  "name": "easally-api-docs",
+  "version": "0.1.0",
+  "description": "Easally API documentation, in OpenAPI v3 format.",
+  "homepage": "https://github.com/easally/api-docs",
+  "private": true,
+  "keywords": [
+    "easally",
+    "accessibility",
+    "api"
+  ],
+  "author": {
+    "name": "Stephen Lewis",
+    "email": "code@stephenlewis.me"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/easally/api-docs/issues"
+  },
+  "scripts": {
+    "lint": "speccy lint ./src/openapi.json",
+    "docs": "speccy serve ./src/openapi.json"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "speccy": "^0.11.0"
+  }
+}

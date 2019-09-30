@@ -66,7 +66,9 @@
 						"application/json": {
 							"schema": {
 								"type": "object",
-								"required": "url",
+								"required": [
+									"url"
+								],
 								"properties": {
 									"url": {
 										"description": "The URL to test.",
@@ -83,13 +85,17 @@
 					"202": {
 						"description": "Accepted. The test has been queued.",
 						"headers": {
-							"$ref": "#/components/schemas/QueuedTestLocationHeader"
+							"Location": {
+								"$ref": "#/components/headers/Location"
+							}
 						}
 					},
 					"409": {
 						"description": "Conflict. A test for the given URL is already in the queue.",
 						"headers": {
-							"$ref": "#/components/schemas/QueuedTestLocationHeader"
+							"Location": {
+								"$ref": "#/components/headers/Location"
+							}
 						}
 					}
 				}
@@ -203,7 +209,9 @@
 					"303": {
 						"description": "See Other. The test has been completed.",
 						"headers": {
-							"$ref": "#/components/schemas/TestResultLocationHeader"
+							"Location": {
+								"$ref": "#/components/headers/Location"
+							}
 						}
 					},
 					"410": {
@@ -216,7 +224,16 @@
 	"components": {
 		"callbacks": {},
 		"examples": {},
-		"headers": {},
+		"headers": {
+			"Location": {
+				"description": "A reference to the related resource.",
+				"required": true,
+				"schema": {
+					"type": "string",
+					"format": "uri"
+				}
+			}
+		},
 		"links": {},
 		"parameters": {},
 		"requestBodies": {},
@@ -229,22 +246,14 @@
 				"format": "uuid",
 				"example": "b6319409-f91a-3310-9309-07849ebf2ad7"
 			},
-			"QueuedTestLocationHeader": {
-				"title": "Queued Test Location Header",
-				"description": "The Location header use to refer to a queued test resource",
-				"Location": {
-					"description": "The URI of the queued test resource",
-					"type": "string",
-					"format": "uri"
-				}
-			},
-			"TestResultLocationHeader": {
-				"title": "Test Result Location Header",
-				"description": "The Location header use to refer to a test result resource",
-				"Location": {
-					"description": "The URI of the test result resource",
-					"type": "string",
-					"format": "uri"
+			"LocationHeader": {
+				"type": "object",
+				"properties": {
+					"Location": {
+						"description": "A reference to the related resource.",
+						"type": "string",
+						"format": "uri"
+					}
 				}
 			},
 			"QueuedTest": {
@@ -372,8 +381,17 @@
 	},
 	"security": [
 		{
-			"name": "ApiKey"
+			"ApiKey": []
 		}
 	],
-	"tags": []
+	"tags": [
+		{
+			"name": "Queued Tests",
+			"description": "Operations related to queued tests."
+		},
+		{
+			"name": "Tests",
+			"description": "Operations related to tests."
+		}
+	]
 }

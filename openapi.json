@@ -1,0 +1,379 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"title": "Easally",
+		"description": "Run and manage Easally accessibility tests.",
+		"version": "0.1.0",
+		"contact": {
+			"name": "Stephen Lewis",
+			"email": "stephen@easally.com",
+			"url": "https://www.easally.com"
+		},
+		"license": {
+			"name": "MIT",
+			"url": "https://github.com/easally/api/blob/master/LICENSE.txt"
+		}
+	},
+	"servers": [
+		{
+			"url": "http://localhost:{port}",
+			"description": "Local development server.",
+			"variables": {
+				"port": {
+					"default": "3000",
+					"description": "The port on which the development server is running."
+				}
+			}
+		}
+	],
+	"paths": {
+		"/tests": {
+			"get": {
+				"operationId": "browseTests",
+				"tags": [
+					"Tests"
+				],
+				"summary": "Retrieve all of the completed tests.",
+				"responses": {
+					"200": {
+						"description": "The completed tests.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"data": {
+											"type": "array",
+											"items": {
+												"$ref": "#/components/schemas/TestResult"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"operationId": "addTest",
+				"tags": [
+					"Tests"
+				],
+				"summary": "Initiate a new accessibility test.",
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"required": "url",
+								"properties": {
+									"url": {
+										"description": "The URL to test.",
+										"type": "string",
+										"format": "uri",
+										"example": "https://www.example.com/test/subject"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"202": {
+						"description": "Accepted. The test has been queued.",
+						"headers": {
+							"$ref": "#/components/schemas/QueuedTestLocationHeader"
+						}
+					},
+					"409": {
+						"description": "Conflict. A test for the given URL is already in the queue.",
+						"headers": {
+							"$ref": "#/components/schemas/QueuedTestLocationHeader"
+						}
+					}
+				}
+			}
+		},
+		"/tests/{id}": {
+			"parameters": [
+				{
+					"name": "id",
+					"description": "The test ID.",
+					"in": "path",
+					"required": true,
+					"schema": {
+						"type": "string",
+						"format": "uuid"
+					}
+				}
+			],
+			"get": {
+				"operationId": "readTest",
+				"tags": [
+					"Tests"
+				],
+				"summary": "Retrieve a completed test.",
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"data": {
+											"$ref": "#/components/schemas/TestResult"
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			}
+		},
+		"/queued-tests": {
+			"get": {
+				"operationId": "browseQueuedTests",
+				"tags": [
+					"Queued Tests"
+				],
+				"summary": "Retrieve all of the queued tests.",
+				"responses": {
+					"200": {
+						"description": "The queued tests.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"data": {
+											"type": "array",
+											"items": {
+												"$ref": "#/components/schemas/QueuedTest"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/queued-tests/{id}": {
+			"parameters": [
+				{
+					"name": "id",
+					"description": "The queued test ID.",
+					"in": "path",
+					"required": true,
+					"schema": {
+						"type": "string",
+						"format": "uuid"
+					}
+				}
+			],
+			"get": {
+				"operationId": "readQueuedTest",
+				"tags": [
+					"Queued Tests"
+				],
+				"summary": "Retrieve a queued test.",
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"data": {
+											"$ref": "#/components/schemas/QueuedTest"
+										}
+									}
+								}
+							}
+						}
+					},
+					"303": {
+						"description": "See Other. The test has been completed.",
+						"headers": {
+							"$ref": "#/components/schemas/TestResultLocationHeader"
+						}
+					},
+					"410": {
+						"description": "Gone. The test has been completed, and garbage-collected."
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"callbacks": {},
+		"examples": {},
+		"headers": {},
+		"links": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"Id": {
+				"title": "ID",
+				"description": "A unique resource identifier.",
+				"type": "string",
+				"format": "uuid",
+				"example": "b6319409-f91a-3310-9309-07849ebf2ad7"
+			},
+			"QueuedTestLocationHeader": {
+				"title": "Queued Test Location Header",
+				"description": "The Location header use to refer to a queued test resource",
+				"Location": {
+					"description": "The URI of the queued test resource",
+					"type": "string",
+					"format": "uri"
+				}
+			},
+			"TestResultLocationHeader": {
+				"title": "Test Result Location Header",
+				"description": "The Location header use to refer to a test result resource",
+				"Location": {
+					"description": "The URI of the test result resource",
+					"type": "string",
+					"format": "uri"
+				}
+			},
+			"QueuedTest": {
+				"title": "Queued Test",
+				"description": "A queued accessibility test.",
+				"type": "object",
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/Id"
+					},
+					"status": {
+						"description": "The status of the queued test.",
+						"type": "string",
+						"enum": [
+							"queued",
+							"running",
+							"failed"
+						]
+					},
+					"queued_at": {
+						"description": "The date/time at which the test was added to the queue.",
+						"type": "string",
+						"format": "date-time",
+						"example": "2019-09-30T17:10:24+01:00"
+					}
+				},
+				"required": [
+					"id",
+					"status",
+					"queued_at"
+				]
+			},
+			"TestResult": {
+				"title": "Test Result",
+				"description": "The result of a completed accessibility test.",
+				"type": "object",
+				"required": [
+					"id",
+					"metadata",
+					"summary"
+				],
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/Id"
+					},
+					"metadata": {
+						"description": "Information related to the test itself (i.e. not the results).",
+						"type": "object",
+						"required": [
+							"url",
+							"queued_at",
+							"started_at",
+							"completed_at"
+						],
+						"properties": {
+							"url": {
+								"description": "The tested URL.",
+								"type": "string",
+								"format": "uri",
+								"example": "https://www.example.com/test/subject"
+							},
+							"queued_at": {
+								"description": "The date/time at which the test was added to the queue.",
+								"type": "string",
+								"format": "date-time",
+								"example": "2019-09-30T17:10:24+01:00"
+							},
+							"started_at": {
+								"description": "The date/time at which the test was started.",
+								"type": "string",
+								"format": "date-time",
+								"example": "2019-09-30T17:10:24+01:00"
+							},
+							"completed_at": {
+								"description": "The date/time at which the test was completed.",
+								"type": "string",
+								"format": "date-time",
+								"example": "2019-09-30T17:10:24+01:00"
+							}
+						}
+					},
+					"summary": {
+						"description": "A summary of the test results.",
+						"type": "object",
+						"required": [
+							"error_count",
+							"pass_count",
+							"skip_count",
+							"warning_count"
+						],
+						"properties": {
+							"error_count": {
+								"type": "integer",
+								"minimum": 0,
+								"description": "The total number of completed checks which resulted in an error."
+							},
+							"pass_count": {
+								"type": "integer",
+								"minimum": 0,
+								"description": "The total number of completed checks which passed without an error or warning."
+							},
+							"skip_count": {
+								"type": "integer",
+								"minimum": 0,
+								"description": "The total number of checks which were skipped."
+							},
+							"warning_count": {
+								"type": "integer",
+								"minimum": 0,
+								"description": "The total number of completed checks which resulted in a warning."
+							}
+						}
+					}
+				}
+			}
+		},
+		"securitySchemes": {
+			"ApiKey": {
+				"type": "apiKey",
+				"description": "API key authorisation.",
+				"name": "ApiKey",
+				"in": "header"
+			}
+		}
+	},
+	"security": [
+		{
+			"name": "ApiKey"
+		}
+	],
+	"tags": []
+}

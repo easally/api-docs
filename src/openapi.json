@@ -129,7 +129,10 @@
 									"type": "object",
 									"properties": {
 										"data": {
-											"$ref": "#/components/schemas/TestResult"
+											"type": "array",
+											"items": {
+												"$ref": "#/components/schemas/TestResult"
+											}
 										}
 									}
 								}
@@ -199,7 +202,10 @@
 									"type": "object",
 									"properties": {
 										"data": {
-											"$ref": "#/components/schemas/QueuedTest"
+											"type": "array",
+											"items": {
+												"$ref": "#/components/schemas/QueuedTest"
+											}
 										}
 									}
 								}

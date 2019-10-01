@@ -85,7 +85,7 @@
 					"202": {
 						"description": "Accepted. The test has been queued.",
 						"headers": {
-							"Location": {
+							"location": {
 								"$ref": "#/components/headers/Location"
 							}
 						}
@@ -93,7 +93,7 @@
 					"409": {
 						"description": "Conflict. A test for the given URL is already in the queue.",
 						"headers": {
-							"Location": {
+							"location": {
 								"$ref": "#/components/headers/Location"
 							}
 						}
@@ -215,7 +215,7 @@
 					"303": {
 						"description": "See Other. The test has been completed.",
 						"headers": {
-							"Location": {
+							"location": {
 								"$ref": "#/components/headers/Location"
 							}
 						}
